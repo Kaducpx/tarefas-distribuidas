@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="seta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+    </marker>
+  </defs>
+  <rect width="900" height="420" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="600" fill="#0f172a">Sistema Distribuído de Gerenciamento de Tarefas</text>
+  <text x="450" y="56" text-anchor="middle" font-size="13" fill="#475569">Rede privada 192.168.56.0/24 (VirtualBox host-only)</text>
+
+  <g>
+    <rect x="30" y="90" width="230" height="120" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+    <text x="145" y="114" text-anchor="middle" font-size="14" font-weight="600" fill="#1e3a8a">VM cliente1</text>
+    <text x="145" y="132" text-anchor="middle" font-size="12" fill="#1e40af">192.168.56.11</text>
+    <rect x="55" y="145" width="180" height="48" rx="6" fill="#ffffff" stroke="#93c5fd"/>
+    <text x="145" y="165" text-anchor="middle" font-size="13" fill="#0f172a">cliente.py</text>
+    <text x="145" y="182" text-anchor="middle" font-size="11" fill="#475569">--nome Cliente1</text>
+  </g>
+
+  <g>
+    <rect x="30" y="260" width="230" height="120" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+    <text x="145" y="284" text-anchor="middle" font-size="14" font-weight="600" fill="#1e3a8a">VM cliente2</text>
+    <text x="145" y="302" text-anchor="middle" font-size="12" fill="#1e40af">192.168.56.12</text>
+    <rect x="55" y="315" width="180" height="48" rx="6" fill="#ffffff" stroke="#93c5fd"/>
+    <text x="145" y="335" text-anchor="middle" font-size="13" fill="#0f172a">cliente.py</text>
+    <text x="145" y="352" text-anchor="middle" font-size="11" fill="#475569">--nome Cliente2</text>
+  </g>
+
+  <g>
+    <rect x="560" y="110" width="310" height="250" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+    <text x="715" y="134" text-anchor="middle" font-size="14" font-weight="600" fill="#14532d">VM servidor</text>
+    <text x="715" y="152" text-anchor="middle" font-size="12" fill="#166534">192.168.56.10</text>
+    <rect x="590" y="168" width="250" height="66" rx="6" fill="#ffffff" stroke="#86efac"/>
+    <text x="715" y="192" text-anchor="middle" font-size="13" fill="#0f172a">servidor.py: Flask API :5000</text>
+    <text x="715" y="210" text-anchor="middle" font-size="11" fill="#475569">valida pedidos, uma thread por requisição</text>
+    <text x="715" y="225" text-anchor="middle" font-size="11" fill="#475569">controle de versão (409 em conflito)</text>
+    <path d="M655,272 a60,10 0 0,0 120,0 v52 a60,10 0 0,1 -120,0 z" fill="#ffffff" stroke="#86efac"/>
+    <ellipse cx="715" cy="272" rx="60" ry="10" fill="#ffffff" stroke="#86efac"/>
+    <text x="715" y="303" text-anchor="middle" font-size="13" fill="#0f172a">SQLite</text>
+    <text x="715" y="320" text-anchor="middle" font-size="11" fill="#475569">tarefas.db</text>
+    <line x1="715" y1="236" x2="715" y2="258" stroke="#334155" stroke-width="1.5" marker-start="url(#seta)" marker-end="url(#seta)"/>
+  </g>
+
+  <line x1="262" y1="160" x2="586" y2="195" stroke="#334155" stroke-width="2" marker-start="url(#seta)" marker-end="url(#seta)"/>
+  <line x1="262" y1="330" x2="586" y2="215" stroke="#334155" stroke-width="2" marker-start="url(#seta)" marker-end="url(#seta)"/>
+  <text x="420" y="160" text-anchor="middle" font-size="12" fill="#0f172a">HTTP + JSON</text>
+  <text x="420" y="176" text-anchor="middle" font-size="11" fill="#475569">X-Cliente: Cliente1</text>
+  <text x="420" y="292" text-anchor="middle" font-size="12" fill="#0f172a">HTTP + JSON</text>
+  <text x="420" y="308" text-anchor="middle" font-size="11" fill="#475569">X-Cliente: Cliente2</text>
+
+  <text x="450" y="406" text-anchor="middle" font-size="11" fill="#64748b">GET /tarefas · POST /tarefas · PATCH /tarefas/&lt;id&gt;/estado · GET /saude</text>
+</svg>
