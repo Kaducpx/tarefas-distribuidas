@@ -1,15 +1,40 @@
+# Vagrantfile: cria e configura as três máquinas virtuais do projeto.
+#
+# Com o comando "vagrant up", o Vagrant usa o VirtualBox para criar:
+#   servidor  (192.168.56.10) -> roda o servidor.py na porta 5000
+#   cliente1  (192.168.56.11) -> roda o cliente.py como "Cliente1"
+#   cliente2  (192.168.56.12) -> roda o cliente.py como "Cliente2"
+#
+# As três ficam numa rede privada, então conseguem conversar entre si.
+# A pasta do projeto aparece dentro de cada VM em /vagrant.
+
+# Endereço fixo do servidor, usado também pelos clientes para encontrá-lo.
 IP_SERVIDOR = "192.168.56.10"
 
 Vagrant.configure("2") do |config|
+  # Sistema usado nas três VMs: Ubuntu 22.04.
   config.vm.box = "ubuntu/jammy64"
+
+  # Tempo máximo (em segundos) esperando cada VM ligar.
+  # É alto porque em alguns computadores o boot é lento.
   config.vm.boot_timeout = 900
 
+  # Configuração de hardware de cada VM: 1 GB de memória e 2 processadores.
+  # A última linha desliga a porta serial, que pode atrasar o boot do Ubuntu.
   config.vm.provider "virtualbox" do |vb|
     vb.memory = 1024
     vb.cpus = 2
     vb.customize ["modifyvm", :id, "--uartmode1", "disconnected"]
   end
 
+  # -------------------------------------------------------------------------
+  # VM do servidor
+  # -------------------------------------------------------------------------
+  # O script abaixo roda uma vez, quando a VM é criada:
+  #   1. instala o suporte a ambientes virtuais do Python;
+  #   2. copia o servidor para /opt/tarefas e instala o Flask;
+  #   3. cria o serviço "tarefas", que liga o servidor sozinho sempre que
+  #      a VM é ligada e o reinicia se ele cair por erro.
   config.vm.define "servidor" do |s|
     s.vm.hostname = "servidor"
     s.vm.network "private_network", ip: IP_SERVIDOR
@@ -45,6 +70,13 @@ UNIT
     SHELL
   end
 
+  # -------------------------------------------------------------------------
+  # VMs dos clientes
+  # -------------------------------------------------------------------------
+  # As duas VMs de cliente são iguais; muda só o nome, o IP e o nome do
+  # cliente. Por isso são criadas num laço com a lista abaixo.
+  # O script copia o cliente.py para /opt/tarefas e cria o atalho "tarefas",
+  # que abre o cliente já com o nome certo e o endereço do servidor.
   [["cliente1", "192.168.56.11", "Cliente1"],
    ["cliente2", "192.168.56.12", "Cliente2"]].each do |nome_vm, ip, nome_cliente|
     config.vm.define nome_vm do |c|

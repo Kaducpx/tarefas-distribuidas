@@ -12,8 +12,7 @@ tarefas-distribuidas/
 │   └── cliente.py         # cliente de terminal (Cliente 1 e Cliente 2)
 ├── docs/
 │   ├── arquitetura.md     # diagrama e descrição da arquitetura
-│   ├── arquitetura.svg    # diagrama em imagem
-│   └── relatorio.md       # relatório técnico
+│   └── arquitetura.svg    # diagrama em imagem
 └── Vagrantfile            # cria as 3 máquinas virtuais
 ```
 
