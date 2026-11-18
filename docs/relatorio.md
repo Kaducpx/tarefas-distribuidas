@@ -38,20 +38,17 @@ um servidor central, também em máquina virtual.
 
 ## 4. Testes realizados
 
-Testes automatizados em `testes/test_sistema.py`. **Resultado: 7 testes, todos aprovados.**
+Os testes foram feitos à mão, nas três máquinas virtuais, seguindo o passo a passo do `README.md`.
 
-| # | Teste | Resultado esperado | Resultado |
-|---|-------|--------------------|-----------|
-| 1 | Cadastrar e listar | tarefa aparece como `pendente` | OK |
-| 2 | Cadastro sem título | erro 400 | OK |
-| 3 | Alterar estado | tarefa passa para `concluida` | OK |
-| 4 | Estado inválido | erro 400 | OK |
-| 5 | Tarefa inexistente | erro 404 | OK |
-| 6 | Cenário do enunciado por HTTP real | a alteração feita por um cliente aparece para o outro | OK |
-| 7 | **Falha:** servidor indisponível | cliente mostra "Servidor indisponível" sem travar | OK |
+| # | Teste | Resultado esperado | Resultado obtido |
+|---|-------|--------------------|------------------|
+| 1 | Cliente 1 cadastra, Cliente 2 lista e conclui, Cliente 1 lista de novo | os dois clientes veem a mesma tarefa e a mudança feita pelo outro | _(preencher)_ |
+| 2 | Reabrir uma tarefa concluída | a tarefa volta para pendente nos dois clientes | _(preencher)_ |
+| 3 | Título vazio, tarefa inexistente, número inválido e opção inválida | mensagem de erro, sem fechar o programa | _(preencher)_ |
+| 4 | **Falha:** desligar o servidor e depois religar | cliente mostra "Servidor indisponível"; ao religar, as tarefas continuam lá | _(preencher)_ |
+| 5 | Um cliente sai e o outro continua usando | o outro cliente funciona normalmente | _(preencher)_ |
 
-**Testes manuais nas VMs:** _(preencher com os prints da demonstração: cenário do
-enunciado e `systemctl stop tarefas` durante o uso)_
+_(colocar os prints de cada teste)_
 
 ## 5. Problemas encontrados e soluções
 

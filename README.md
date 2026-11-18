@@ -10,8 +10,6 @@ tarefas-distribuidas/
 │   └── requirements.txt
 ├── cliente/
 │   └── cliente.py         # cliente de terminal (Cliente 1 e Cliente 2)
-├── testes/
-│   └── test_sistema.py    # testes automatizados
 ├── docs/
 │   ├── arquitetura.md     # diagrama e descrição da arquitetura
 │   ├── arquitetura.svg    # diagrama em imagem
@@ -145,34 +143,55 @@ python3 cliente/cliente.py Cliente2
 
 No Windows, troque `python3` por `python` e `.venv/bin/` por `.venv\Scripts\`.
 
-### Testes automatizados
-
-```bash
-.venv/bin/python -m unittest discover -s testes -v
-```
-
 ---
 
-## Roteiro de demonstração
+## Como testar
 
-1. **Cliente 1**: opção 2, cadastrar "Estudar introdução à programação".
-2. **Cliente 2**: opção 1, a tarefa do Cliente 1 aparece na lista.
-3. **Cliente 2**: opção 3, número 1, a tarefa fica concluída.
-4. **Cliente 1**: opção 1, a tarefa aparece como `[x]`.
+Antes de começar, deixe o **Cliente 1** e o **Cliente 2** abertos, cada um no seu terminal,
+um do lado do outro. Tire um print depois de cada teste para colocar no relatório.
 
-**Teste de falha: servidor fora do ar**
+### Teste 1: os dois clientes veem as mesmas tarefas
 
-1. Desligue o servidor:
+1. No **Cliente 1**, digite `2` e cadastre a tarefa `Estudar introdução à programação`.
+2. No **Cliente 2**, digite `1`. A tarefa cadastrada pelo Cliente 1 aparece na lista.
+3. No **Cliente 2**, digite `3` e depois `1`. A tarefa fica marcada com `[x]`.
+4. No **Cliente 1**, digite `1`. A tarefa aparece com `[x]`, ou seja, o Cliente 1 viu o que o Cliente 2 fez.
+
+### Teste 2: reabrir uma tarefa
+
+1. No **Cliente 1**, digite `4` e depois `1`.
+2. No **Cliente 2**, digite `1`. A tarefa voltou a aparecer com `[ ]`.
+
+### Teste 3: erros de digitação
+
+Em qualquer cliente:
+
+| O que fazer | O que deve aparecer |
+|---|---|
+| Digitar `2` e apertar Enter sem escrever o título | `ERRO: O título da tarefa é obrigatório.` |
+| Digitar `3` e depois `99` | `ERRO: Tarefa 99 não encontrada.` |
+| Digitar `3` e depois uma letra | `ERRO: informe um número válido.` |
+| Digitar `7` no menu | `ERRO: opção inválida.` |
+
+### Teste 4: o servidor cai (teste de falha)
+
+1. Abra um terceiro terminal e desligue o servidor:
 
    ```bash
    vagrant ssh servidor -c "sudo systemctl stop tarefas"
    ```
 
-2. Em qualquer cliente, escolha a opção 1. Aparece `ERRO: Servidor indisponível...` e o cliente continua aberto.
-3. Religue o servidor:
+2. Em qualquer cliente, digite `1`. Deve aparecer `ERRO: Servidor indisponível...`, e o cliente continua aberto.
+3. Ligue o servidor de novo:
 
    ```bash
    vagrant ssh servidor -c "sudo systemctl start tarefas"
    ```
 
-4. No cliente, liste de novo. As tarefas continuam lá, porque estão gravadas no SQLite.
+4. No cliente, digite `1`. As tarefas continuam lá, nada foi perdido.
+
+### Teste 5: um cliente sai e o outro continua
+
+1. No **Cliente 1**, digite `0` para sair.
+2. No **Cliente 2**, cadastre uma tarefa nova e liste. Tudo funciona normalmente.
+3. Abra o Cliente 1 de novo e liste. A tarefa nova feita pelo Cliente 2 aparece.
