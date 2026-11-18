@@ -5,34 +5,34 @@
 ```mermaid
 flowchart LR
     subgraph VM2["VM cliente1 (192.168.56.11)"]
-        C1["cliente.py<br/>--nome Cliente1"]
+        C1["cliente.py Cliente1"]
     end
     subgraph VM3["VM cliente2 (192.168.56.12)"]
-        C2["cliente.py<br/>--nome Cliente2"]
+        C2["cliente.py Cliente2"]
     end
     subgraph VM1["VM servidor (192.168.56.10)"]
-        API["Flask API :5000<br/>(uma thread por requisição)"]
+        API["Flask API :5000"]
         DB[("SQLite<br/>tarefas.db")]
         API <-->|SQL| DB
     end
-    C1 <-->|"HTTP + JSON<br/>X-Cliente: Cliente1"| API
-    C2 <-->|"HTTP + JSON<br/>X-Cliente: Cliente2"| API
+    C1 <-->|"HTTP + JSON"| API
+    C2 <-->|"HTTP + JSON"| API
 ```
 
 ## Componentes
 
 | Componente | Onde roda | Responsabilidade |
 |------------|-----------|------------------|
-| **Servidor** (`servidor/servidor.py`) | VM `servidor` | Abre o serviço HTTP na porta 5000, valida os pedidos, grava e lê as tarefas no SQLite e responde com JSON padronizado. É o único dono dos dados. |
-| **Banco** (`tarefas.db`) | VM `servidor` | Tabela `tarefas` com id, título, descrição, estado, quem criou, quem alterou por último, horários e `versao`. |
-| **Cliente 1 e Cliente 2** (`cliente/cliente.py`) | VMs `cliente1` e `cliente2` | Interface de terminal. Não guardam dados próprios: toda tela mostrada vem de uma resposta do servidor. |
+| **Servidor** (`servidor/servidor.py`) | VM `servidor` | Abre o serviço HTTP na porta 5000, recebe os pedidos, grava e lê as tarefas no SQLite e responde em JSON. É o único lugar onde os dados ficam guardados. |
+| **Banco** (`tarefas.db`) | VM `servidor` | Tabela `tarefas` com `id`, `titulo` e `estado` (`pendente` ou `concluida`). |
+| **Cliente 1 e Cliente 2** (`cliente/cliente.py`) | VMs `cliente1` e `cliente2` | Menu de terminal. Não guardam dados: tudo o que mostram vem do servidor. |
 
 ## Comunicação
 
-- Protocolo: HTTP/1.1 sobre TCP, com corpo em JSON (UTF-8).
-- Cada cliente se identifica no cabeçalho `X-Cliente`, que o servidor grava em `criado_por` e `atualizado_por`.
-- Formato de resposta: `{"sucesso": true|false, "mensagem": "...", "dados": ...}`.
-- Códigos usados: `200` (ok), `201` (criado), `400` (dados inválidos), `404` (não encontrado), `409` (conflito de versão) e `500` (erro interno).
+- Protocolo: HTTP sobre TCP, com corpo em JSON.
+- `GET /tarefas` lista, `POST /tarefas` cadastra e `PUT /tarefas/<id>` altera o estado.
+- Sucesso: resposta com `mensagem`. Erro: resposta com `erro` e código 400 ou 404.
+- Se o servidor não responder em 5 segundos, o cliente mostra "Servidor indisponível" e continua funcionando.
 
 ## Fluxo do exemplo do enunciado
 
@@ -42,17 +42,11 @@ sequenceDiagram
     participant S as Servidor
     participant C2 as Cliente 2
     C1->>S: POST /tarefas {"titulo": "Estudar introdução à programação"}
-    S-->>C1: 201 {id: 1, estado: pendente, versao: 1}
+    S-->>C1: 201 Tarefa 1 cadastrada
     C2->>S: GET /tarefas
-    S-->>C2: 200 [{id: 1, estado: pendente, versao: 1}]
-    C2->>S: PATCH /tarefas/1/estado {"estado": "concluida", "versao": 1}
-    S-->>C2: 200 {id: 1, estado: concluida, versao: 2}
+    S-->>C2: 200 [{id: 1, estado: pendente}]
+    C2->>S: PUT /tarefas/1 {"estado": "concluida"}
+    S-->>C2: 200 Tarefa 1 marcada como concluida
     C1->>S: GET /tarefas
-    S-->>C1: 200 [{id: 1, estado: concluida, atualizado_por: Cliente2}]
+    S-->>C1: 200 [{id: 1, estado: concluida}]
 ```
-
-## Consistência e concorrência
-
-- O servidor é multithread. Cada requisição usa sua própria conexão SQLite, e o SQLite serializa as escritas.
-- A alteração de estado roda numa transação `BEGIN IMMEDIATE`, que lê a versão e atualiza a tarefa sem interferência de outro cliente.
-- **Controle de concorrência otimista:** o cliente envia a `versao` que viu na última listagem. Se outro cliente alterou a tarefa nesse meio-tempo, o servidor responde `409` em vez de sobrescrever às cegas.

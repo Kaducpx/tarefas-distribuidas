@@ -31,7 +31,8 @@ After=network-online.target
 [Service]
 User=vagrant
 WorkingDirectory=/opt/tarefas
-ExecStart=/opt/tarefas/venv/bin/python /opt/tarefas/servidor.py --porta 5000 --banco /opt/tarefas/tarefas.db
+Environment=TAREFAS_DB=/opt/tarefas/tarefas.db
+ExecStart=/opt/tarefas/venv/bin/python /opt/tarefas/servidor.py
 Restart=on-failure
 
 [Install]
@@ -53,11 +54,7 @@ UNIT
         set -e
         mkdir -p /opt/tarefas
         cp /vagrant/cliente/cliente.py /opt/tarefas/
-        cat > /etc/profile.d/tarefas.sh <<'ENV'
-export CLIENTE_NOME=#{nome_cliente}
-export SERVIDOR_URL=http://#{IP_SERVIDOR}:5000
-alias tarefas='python3 /opt/tarefas/cliente.py'
-ENV
+        echo "alias tarefas='python3 /opt/tarefas/cliente.py #{nome_cliente} http://#{IP_SERVIDOR}:5000'" > /etc/profile.d/tarefas.sh
       SHELL
     end
   end
