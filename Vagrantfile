@@ -5,7 +5,7 @@
 #   cliente1  (192.168.56.11) -> roda o cliente.py como "Cliente1"
 #   cliente2  (192.168.56.12) -> roda o cliente.py como "Cliente2"
 #
-# como as três ficam num servidor privado, elas conseguem conversar entre si.
+# como as três ficam numa rede privada, elas conseguem conversar entre si.
 # A pasta do projeto aparece dentro de cada VM em /vagrant.
 
 # endereço fixo do servidor, os clientes também usam ele pra poder o encontrar
@@ -32,7 +32,7 @@ Vagrant.configure("2") do |config|
   #  instala o suporte a ambientes virtuais do Python;
   #  copia o servidor para /opt/tarefas e instala o Flask;
   #  cria o serviço tarefas, que liga o servidor sozinho sempre que
-  #   a vk é ligada e o reinicia se ele cair por erro.
+  #   a VM é ligada e o reinicia se ele cair por erro.
   config.vm.define "servidor" do |s|
     s.vm.hostname = "servidor"
     s.vm.network "private_network", ip: IP_SERVIDOR
